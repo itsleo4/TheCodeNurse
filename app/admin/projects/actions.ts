@@ -80,3 +80,54 @@ export async function toggleProjectActive(id: string, currentStatus: boolean) {
   revalidatePath('/admin/projects')
   revalidatePath('/')
 }
+export async function editProject(id: string, formData: FormData) {
+  const supabase = createClient()
+  
+  const title = formData.get('title') as string
+  const description = formData.get('description') as string
+  const category = formData.get('category') as string
+  const technologies = (formData.get('technologies') as string).split(',').map(t => t.trim())
+  const demo_link = formData.get('demo_link') as string
+  const repo_link = formData.get('repo_link') as string
+  const is_active = formData.get('is_active') === 'on'
+  
+  const updateData: any = {
+    title,
+    description,
+    category,
+    technologies,
+    demo_link,
+    repo_link,
+    is_active
+  }
+
+  // Handle Image Update (Optional)
+  const imageFile = formData.get('thumbnail') as File
+  if (imageFile && imageFile.size > 0) {
+    const fileExt = imageFile.name.split('.').pop()
+    const fileName = `${Math.random()}.${fileExt}`
+    const filePath = `thumbnails/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('project-images')
+      .upload(filePath, imageFile)
+
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabase.storage
+        .from('project-images')
+        .getPublicUrl(filePath)
+      updateData.image_url = publicUrl
+    }
+  }
+
+  const { error } = await supabase
+    .from('projects')
+    .update(updateData)
+    .eq('id', id)
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/projects')
+  revalidatePath('/projects')
+  revalidatePath('/')
+}

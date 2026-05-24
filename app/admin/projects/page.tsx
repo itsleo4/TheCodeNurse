@@ -7,7 +7,7 @@ async function getProjects() {
   const supabase = createClient()
   const { data } = await supabase
     .from('projects')
-    .select('id, title, category, is_active, created_at')
+    .select('*')
     .order('created_at', { ascending: false })
   
   return data || []
