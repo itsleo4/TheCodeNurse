@@ -78,8 +78,15 @@ export function AddProjectForm() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-bold uppercase tracking-widest text-[#0056b3]">Image URL</label>
-          <input name="image_url" className="w-full rounded-xl border border-blue-100 bg-white px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-[#0056b3]/20" placeholder="https://..." />
+          <label className="text-[10px] font-bold uppercase tracking-widest text-[#0056b3]">Project Thumbnail</label>
+          <div className="relative">
+            <input 
+              type="file" 
+              name="thumbnail" 
+              accept="image/*"
+              className="w-full rounded-xl border border-dashed border-blue-200 bg-white px-4 py-2 text-xs font-bold text-slate-400 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-black file:text-[#0056b3] hover:border-[#0056b3] transition-all cursor-pointer" 
+            />
+          </div>
         </div>
 
         <div className="space-y-2">

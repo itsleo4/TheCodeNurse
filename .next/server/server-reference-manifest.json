@@ -1,33 +1,23 @@
 {
   "node": {
-    "3232bbbb59070af8e6ba419bc209353a62786773": {
+    "3b28fa8d5afd592e0df84242e49b4d658512191e": {
       "workers": {
-        "app/admin/messages/[id]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!",
-        "app/admin/inbox/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!"
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
+        "app/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/admin/messages/[id]/page": "action-browser",
-        "app/admin/inbox/page": "action-browser"
+        "app/page": "action-browser",
+        "app/login/page": "action-browser"
       }
     },
-    "417e754f364bfb823a601e977b41aeb2a2eb1efd": {
+    "eaa32d40960d70b053ee0cad7f2dc33f52881ecf": {
       "workers": {
-        "app/admin/messages/[id]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!",
-        "app/admin/inbox/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!"
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
+        "app/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/admin/messages/[id]/page": "action-browser",
-        "app/admin/inbox/page": "action-browser"
-      }
-    },
-    "cd49f5b2b41b5fef4334344ca8156c65cd18a3f0": {
-      "workers": {
-        "app/admin/messages/[id]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!",
-        "app/admin/inbox/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Cadmin%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22deleteMessage%22%2C%22deleteMultipleMessages%22%2C%22deleteAllMessages%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/admin/messages/[id]/page": "action-browser",
-        "app/admin/inbox/page": "action-browser"
+        "app/page": "action-browser",
+        "app/login/page": "action-browser"
       }
     },
     "8f2d5cdd787190e2f5b64b292aa7ba01e0961bdb": {
@@ -53,36 +43,8 @@
       "layer": {
         "app/admin/projects/page": "action-browser"
       }
-    },
-    "eaa32d40960d70b053ee0cad7f2dc33f52881ecf": {
-      "workers": {
-        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/projects/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/contact/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/page": "action-browser",
-        "app/login/page": "action-browser",
-        "app/projects/page": "action-browser",
-        "app/contact/page": "action-browser"
-      }
-    },
-    "3b28fa8d5afd592e0df84242e49b4d658512191e": {
-      "workers": {
-        "app/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/projects/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!",
-        "app/contact/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cbhola%5C%5COneDrive%5C%5CDesktop%5C%5Cthecodenurse%5C%5Capp%5C%5Clogin%5C%5Cactions.ts%22%2C%5B%22login%22%2C%22secureSignOut%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/login/page": "action-browser",
-        "app/page": "action-browser",
-        "app/projects/page": "action-browser",
-        "app/contact/page": "action-browser"
-      }
     }
   },
   "edge": {},
-  "encryptionKey": "5jakH8pb4/9zV8SrhNSUfC6wahMgZng0pDj1eRMCIWI="
+  "encryptionKey": "Xb5nPk7Nr2UdRZ/YqNZxZ8nIKBVd261yaJl22/VPyis="
 }

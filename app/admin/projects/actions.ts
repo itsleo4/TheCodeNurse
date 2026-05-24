@@ -10,10 +10,35 @@ export async function addProject(formData: FormData) {
   const description = formData.get('description') as string
   const category = formData.get('category') as string
   const technologies = (formData.get('technologies') as string).split(',').map(t => t.trim())
-  const image_url = formData.get('image_url') as string
   const demo_link = formData.get('demo_link') as string
   const repo_link = formData.get('repo_link') as string
   const is_active = formData.get('is_active') === 'on'
+  
+  // Handle Image Upload
+  const imageFile = formData.get('thumbnail') as File
+  let image_url = null
+
+  if (imageFile && imageFile.size > 0) {
+    const fileExt = imageFile.name.split('.').pop()
+    const fileName = `${Math.random()}.${fileExt}`
+    const filePath = `thumbnails/${fileName}`
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('project-images')
+      .upload(filePath, imageFile)
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError)
+      throw new Error(`Failed to upload image: ${uploadError.message}`)
+    }
+
+    // Get Public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('project-images')
+      .getPublicUrl(filePath)
+    
+    image_url = publicUrl
+  }
 
   const { error } = await supabase.from('projects').insert([{
     title,
@@ -29,6 +54,7 @@ export async function addProject(formData: FormData) {
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/projects')
+  revalidatePath('/projects')
   revalidatePath('/')
 }
 
