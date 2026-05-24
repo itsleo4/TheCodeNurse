@@ -1,43 +1,47 @@
 'use server'
 
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 export type LoginState = {
   error: string | null
 }
 
-/**
- * Server Action: handles admin login via Supabase Auth.
- *
- * Flow:
- * 1. Reads email + password from the submitted form.
- * 2. Calls supabase.auth.signInWithPassword() — Supabase validates credentials.
- * 3. On success, Supabase returns a session; @supabase/ssr writes it to cookies automatically.
- * 4. Redirects the user to /admin (or the redirectTo path set by middleware).
- */
-export async function login(
-  _prevState: LoginState,
-  formData: FormData
-): Promise<LoginState> {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const redirectTo = (formData.get('redirectTo') as string) || '/admin'
-
-  if (!email || !password) {
-    return { error: 'Email and password are required.' }
-  }
-
+export async function login(prevState: LoginState, formData: FormData): Promise<LoginState> {
   const supabase = createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const redirectTo = (formData.get('redirectTo') as string) || '/admin/dashboard'
 
-  if (error) {
-    return { error: error.message }
+  if (!email || !password) {
+    return { error: 'Email and password are required' }
   }
 
-  const safeRedirect =
-    redirectTo.startsWith('/admin') ? redirectTo : '/admin'
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
 
-  redirect(safeRedirect)
+  if (error) {
+    console.error('Login error:', error.message)
+    return { error: 'Invalid credentials. Access denied.' }
+  }
+
+  revalidatePath('/', 'layout')
+  redirect(redirectTo)
+}
+
+export async function secureSignOut() {
+  const supabase = createClient()
+  
+  // 1. Sign out from Supabase (clears server-side session)
+  await supabase.auth.signOut()
+  
+  // 2. Revalidate to ensure all protected routes realize the user is gone
+  revalidatePath('/', 'layout')
+  
+  // 3. Redirect to login page
+  redirect('/login')
 }

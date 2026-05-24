@@ -96,22 +96,8 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
         </form>
 
         <div className="mt-6 border-t border-slate-100 pt-5 text-center">
-          <a
-            href="#"
-            className="text-xs font-bold uppercase tracking-wide text-[#0056b3] hover:underline"
-          >
-            Forgot Password?
-          </a>
-          <p className="mt-3 text-xs text-slate-500">
-            Need assistance?{' '}
-            <a
-              href="https://wa.me/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-green-600 hover:underline"
-            >
-              WhatsApp Support
-            </a>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            Secure Authentication Pipeline Active
           </p>
         </div>
       </div>

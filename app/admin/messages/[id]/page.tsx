@@ -1,230 +1,211 @@
 import Link from 'next/link'
-import { ArrowLeft, Mail, MessageCircle, Phone } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { 
+  ArrowLeft, 
+  Mail, 
+  MessageSquare, 
+  Phone, 
+  Clock, 
+  CheckCircle2,
+  ExternalLink
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { type RecentMessage } from '@/app/admin/lib/stats'
+import { DeleteMessageButton } from '../delete-button'
 
-type MessageDetail = {
-  id: string
-  visitor_name: string
-  visitor_email: string | null
-  visitor_phone: string | null
-  message_body: string
-  is_read: boolean
-  created_at: string
-}
-
-type MessagePageProps = {
+export default async function MessageDetailPage({
+  params,
+}: {
   params: { id: string }
-}
-
-function formatDateTime(dateString: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(new Date(dateString))
-}
-
-function formatPhoneForWhatsApp(phone: string): string {
-  return phone.replace(/\D/g, '')
-}
-
-function buildWhatsAppUrl(phone: string, visitorName: string): string {
-  const digits = formatPhoneForWhatsApp(phone)
-  const text = encodeURIComponent(
-    `Hi ${visitorName}, thank you for reaching out via TheCodeNurse. `
-  )
-  return `https://wa.me/${digits}?text=${text}`
-}
-
-function buildMailtoUrl(email: string, visitorName: string): string {
-  const subject = encodeURIComponent(`Re: ${visitorName} - Inquiry`)
-  const body = encodeURIComponent(
-    `Hi ${visitorName},\n\nThank you for your message through TheCodeNurse portfolio.\n\n`
-  )
-  return `mailto:${email}?subject=${subject}&body=${body}`
-}
-
-/**
- * Fetches a single message and marks it as read before the page renders.
- */
-async function getMessageAndMarkRead(id: string): Promise<MessageDetail | null> {
+}) {
   const supabase = createClient()
 
+  // 1. Fetch message
   const { data: message, error } = await supabase
     .from('messages')
-    .select(
-      'id, visitor_name, visitor_email, visitor_phone, message_body, is_read, created_at'
-    )
-    .eq('id', id)
+    .select('*')
+    .eq('id', params.id)
     .single()
 
   if (error || !message) {
-    if (error) console.error('getMessageAndMarkRead error:', error)
-    return null
+    return notFound()
   }
 
+  // 2. Mark as read if not already read (Server-side update)
   if (!message.is_read) {
-    const { error: updateError } = await supabase
+    await supabase
       .from('messages')
       .update({ is_read: true })
-      .eq('id', id)
-
-    if (updateError) {
-      console.error('markAsRead error:', updateError)
-    } else {
-      message.is_read = true
-    }
+      .eq('id', params.id)
   }
 
-  return message
-}
+  const typedMessage = message as RecentMessage
 
-export default async function MessageDetailPage({ params }: MessagePageProps) {
-  const message = await getMessageAndMarkRead(params.id)
+  // 3. Prepare Answer Links
+  const whatsappLink = typedMessage.visitor_phone 
+    ? `https://wa.me/${typedMessage.visitor_phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello ${typedMessage.visitor_name}, thank you for contacting TheCodeNurse. I'm following up on your message: "${typedMessage.message_body.slice(0, 50)}..."`)}`
+    : null
 
-  if (!message) {
-    return (
-      <div className="mx-auto max-w-2xl py-12 text-center">
-        <h1 className="text-2xl font-bold text-[#1a2b4a]">Message not found</h1>
-        <p className="mt-2 text-sm text-slate-500">
-          This message may have been deleted or the link is invalid.
-        </p>
-        <Link
-          href="/admin/dashboard"
-          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#0056b3] hover:underline"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Dashboard
-        </Link>
-      </div>
-    )
-  }
-
-  const hasPhone =
-    !!message.visitor_phone && formatPhoneForWhatsApp(message.visitor_phone).length > 0
-  const hasEmail = !!message.visitor_email
+  const emailLink = `mailto:${typedMessage.visitor_email}?subject=Re: Inquiry from ${typedMessage.visitor_name} - TheCodeNurse&body=${encodeURIComponent(`Hi ${typedMessage.visitor_name},\n\nThank you for reaching out.\n\n--- Your Original Message ---\n${typedMessage.message_body}`)}`
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <Link
-        href="/admin/dashboard"
-        className="inline-flex items-center gap-2 text-sm font-medium text-[#0056b3] hover:underline"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
-      </Link>
+    <div className="mx-auto max-w-4xl space-y-6 pb-12">
+      {/* Top Navigation */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/admin/dashboard"
+          className="group flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#0056b3]"
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200 transition-all group-hover:ring-[#0056b3]/30 group-hover:bg-blue-50">
+            <ArrowLeft className="h-4 w-4" />
+          </div>
+          Back to Inbox
+        </Link>
+        <div className="flex items-center gap-2">
+          {typedMessage.is_read ? (
+            <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-600 ring-1 ring-emerald-100">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Message Read
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 rounded-full bg-[#0056b3] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+              New Message
+            </span>
+          )}
+          <DeleteMessageButton id={params.id} />
+        </div>
+      </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-100 px-6 py-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-[#1a2b4a]">
-                {message.visitor_name}
+      <div className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl shadow-slate-200/50">
+        {/* Header Header */}
+        <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/50 to-white px-8 py-10 sm:px-12">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0056b3]">Sender Details</p>
+              <h1 className="text-4xl font-black tracking-tight text-[#1a2b4a] sm:text-5xl">
+                {typedMessage.visitor_name}
               </h1>
-              <p className="mt-1 text-sm text-slate-500">
-                {formatDateTime(message.created_at)}
-              </p>
             </div>
-            {!message.is_read && (
-              <span className="rounded-full bg-[#0056b3] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                New
+            
+            <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
+              <span className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5">
+                <Clock className="h-4 w-4 text-slate-400" />
+                {new Intl.DateTimeFormat('en-US', {
+                  dateStyle: 'full',
+                  timeStyle: 'short',
+                }).format(new Date(typedMessage.created_at))}
               </span>
-            )}
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-4 text-sm">
-            {hasEmail ? (
-              <a
-                href={`mailto:${message.visitor_email}`}
-                className="inline-flex items-center gap-1.5 text-[#0056b3] hover:underline"
-              >
-                <Mail className="h-4 w-4" />
-                {message.visitor_email}
-              </a>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 text-slate-400">
-                <Mail className="h-4 w-4" />
-                No email provided
-              </span>
-            )}
-            {hasPhone ? (
-              <a
-                href={`tel:${message.visitor_phone}`}
-                className="inline-flex items-center gap-1.5 text-[#0056b3] hover:underline"
-              >
-                <Phone className="h-4 w-4" />
-                {message.visitor_phone}
-              </a>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 text-slate-400">
-                <Phone className="h-4 w-4" />
-                No phone provided
-              </span>
-            )}
+            </div>
           </div>
         </div>
 
-        <div className="px-6 py-5">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-            Message
-          </h2>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
-            {message.message_body}
-          </p>
+        <div className="px-8 py-10 sm:px-12">
+          <div className="grid gap-10 lg:grid-cols-3">
+            {/* Left Column: Contact & Stats */}
+            <div className="space-y-8 lg:col-span-1">
+              <div className="space-y-4">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Contact Method</h3>
+                
+                <div className="space-y-3">
+                  <a
+                    href={`mailto:${typedMessage.visitor_email}`}
+                    className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:border-[#0056b3]/30 hover:shadow-md active:scale-95"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#0056b3] transition-colors group-hover:bg-[#0056b3] group-hover:text-white">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-[#1a2b4a]">{typedMessage.visitor_email}</p>
+                      <p className="text-[10px] font-semibold uppercase text-slate-400">Personal Email</p>
+                    </div>
+                    <ExternalLink className="h-3.5 w-3.5 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100" />
+                  </a>
+
+                  {typedMessage.visitor_phone ? (
+                    <a
+                      href={`tel:${typedMessage.visitor_phone}`}
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:border-emerald-200 hover:shadow-md active:scale-95"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                        <Phone className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-[#1a2b4a]">{typedMessage.visitor_phone}</p>
+                        <p className="text-[10px] font-semibold uppercase text-slate-400">Phone Number</p>
+                      </div>
+                      <ExternalLink className="h-3.5 w-3.5 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100" />
+                    </a>
+                  ) : (
+                    <div className="flex items-center gap-3 rounded-2xl border border-slate-50 bg-slate-50/50 p-4 opacity-60">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-200 text-slate-400">
+                        <Phone className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-slate-400">Not provided</p>
+                        <p className="text-[10px] font-semibold uppercase text-slate-300">Phone Number</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Message Content */}
+            <div className="space-y-8 lg:col-span-2">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#0056b3]">
+                    <MessageSquare className="h-4 w-4" />
+                    Message Content
+                  </h3>
+                </div>
+                <div className="relative overflow-hidden rounded-3xl bg-slate-50 p-8 shadow-inner ring-1 ring-slate-100">
+                  {/* Decorative quote mark */}
+                  <div className="absolute -left-2 -top-2 select-none text-9xl font-black text-slate-200/50 opacity-50">
+                    &ldquo;
+                  </div>
+                  <p className="relative z-10 whitespace-pre-wrap text-lg leading-relaxed text-[#1a2b4a]">
+                    {typedMessage.message_body}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid gap-4 sm:grid-cols-2 pt-4">
+                {whatsappLink ? (
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-8 py-5 text-base font-bold text-white transition-all hover:bg-[#1fb855] hover:shadow-xl hover:shadow-emerald-200 active:scale-95"
+                  >
+                    Reply on WhatsApp
+                  </a>
+                ) : (
+                  <button
+                    disabled
+                    className="flex cursor-not-allowed items-center justify-center gap-3 rounded-2xl bg-slate-100 px-8 py-5 text-base font-bold text-slate-400"
+                  >
+                    No WhatsApp Number
+                  </button>
+                )}
+                
+                <a
+                  href={emailLink}
+                  className="flex items-center justify-center gap-3 rounded-2xl bg-[#0056b3] px-8 py-5 text-base font-bold text-white transition-all hover:bg-[#003d8a] hover:shadow-xl hover:shadow-blue-200 active:scale-95"
+                >
+                  Reply via Email
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="border-t border-slate-100 bg-slate-50 px-6 py-5">
-          <h2 className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-            Quick Reply
-          </h2>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            {hasPhone ? (
-              <a
-                href={buildWhatsAppUrl(message.visitor_phone!, message.visitor_name)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1fb855]"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Reply on WhatsApp
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-slate-200 px-5 py-3 text-sm font-semibold text-slate-500"
-              >
-                <MessageCircle className="h-5 w-5" />
-                No phone number
-              </button>
-            )}
-
-            {hasEmail ? (
-              <a
-                href={buildMailtoUrl(message.visitor_email!, message.visitor_name)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#0056b3] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#004494]"
-              >
-                <Mail className="h-5 w-5" />
-                Reply via Email
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-slate-200 px-5 py-3 text-sm font-semibold text-slate-500"
-              >
-                <Mail className="h-5 w-5" />
-                No email address
-              </button>
-            )}
-          </div>
-          <p className="mt-3 text-xs text-slate-500">
-            Zero-budget replies — opens WhatsApp or your default email app with a
-            pre-filled message.
-          </p>
+        {/* Footer Notice */}
+        <div className="flex items-center justify-center gap-2 bg-slate-50/50 py-6 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <CheckCircle2 className="h-3 w-3" />
+          End of message thread
         </div>
       </div>
     </div>
